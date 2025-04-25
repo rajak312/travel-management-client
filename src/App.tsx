@@ -1,8 +1,13 @@
+import { Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/SignUp";
+
 function App() {
   return (
-    <div className="text-center text-3xl font-semibold text-indigo-600 py-10">
-      🚀 Travel Booking App (Frontend with TypeScript + Tailwind)
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/user/signup" element={<Signup />} />
+    </Routes>
   );
 }
 
