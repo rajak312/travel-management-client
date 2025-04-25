@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const LoginTabs = () => {
   const { login } = useAuth();
@@ -26,6 +27,7 @@ const LoginTabs = () => {
     try {
       const res = await api.post("/auth/login", form);
       login(res.data.user, res.data.token);
+      toast.success(`Welcome back, ${res.data.user.name} 🎉`);
 
       if (res.data.user.role === "admin") {
         navigate("/packages");
@@ -34,7 +36,7 @@ const LoginTabs = () => {
       }
     } catch (err) {
       const axiosErr = err as AxiosError<{ message: string }>;
-      setError(axiosErr.response?.data?.message || "Login failed");
+      toast.error(axiosErr.response?.data?.message || "Login failed");
     }
   };
 

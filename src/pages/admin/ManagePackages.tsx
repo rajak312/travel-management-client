@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
 import { TravelPackage } from "../../types/Package";
+import { toast } from "react-toastify";
 
 const ManagePackages: React.FC = () => {
   const [packages, setPackages] = useState<TravelPackage[]>([]);
@@ -17,8 +18,14 @@ const ManagePackages: React.FC = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    await api.delete(`/packages/${id}`);
-    fetchPackages();
+    try {
+      await api.delete(`/packages/${id}`);
+      toast.success("Package deleted successfully 🗑️");
+      fetchPackages();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete package");
+    }
   };
 
   return (

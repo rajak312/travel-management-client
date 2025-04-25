@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import api from "../../utils/api";
 import { TravelPackage } from "../../types/Package";
 import PackageForm from "../../components/PackageForm";
+import { toast } from "react-toastify";
 
 const EditPackage = () => {
   const { id } = useParams();
@@ -59,13 +60,20 @@ const EditPackage = () => {
       },
     };
 
-    if (isEdit) {
-      await api.put(`/packages/${id}`, payload);
-    } else {
-      await api.post("/packages", payload);
-    }
+    try {
+      if (isEdit) {
+        await api.put(`/packages/${id}`, payload);
+        toast.success("Package updated successfully ✅");
+      } else {
+        await api.post("/packages", payload);
+        toast.success("Package created successfully 🎉");
+      }
 
-    navigate("/packages");
+      navigate("/packages");
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong 😓");
+    }
   };
 
   return (

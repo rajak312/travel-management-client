@@ -3,11 +3,13 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import api from "../utils/api";
 import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 const Signup: React.FC = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,15 +17,20 @@ const Signup: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
     try {
       const res = await api.post("/auth/register", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/"); // 🚀 redirect after signup
+
+      // Save auth globally
+      login(res.data.user, res.data.token);
+
+      toast.success("Account created successfully 🎉");
+
+      navigate("/user/dashboard");
     } catch (err) {
       const axiosErr = err as import("axios").AxiosError<{ message: string }>;
-      setError(axiosErr.response?.data?.message || "Signup failed");
+      const message = axiosErr.response?.data?.message || "Signup failed";
+      toast.error(message);
     }
   };
 
@@ -56,9 +63,7 @@ const Signup: React.FC = () => {
               value={form.password}
               onChange={handleChange}
             />
-            {error && (
-              <p className="text-sm text-red-500 text-center">{error}</p>
-            )}
+
             <Button type="submit" text="Sign Up" />
           </form>
         </div>
