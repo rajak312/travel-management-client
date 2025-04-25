@@ -1,132 +1,75 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../utils/api";
-import PackageForm from "../../components/PackageForm";
 import { TravelPackage } from "../../types/Package";
 
 const ManagePackages: React.FC = () => {
   const [packages, setPackages] = useState<TravelPackage[]>([]);
-  const [form, setForm] = useState({
-    from: "",
-    to: "",
-    startDate: "",
-    endDate: "",
-    basePrice: 0,
-    food: false,
-    accommodation: false,
-  });
-  const [editId, setEditId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const fetchPackages = async () => {
     const res = await api.get<TravelPackage[]>("/packages");
     setPackages(res.data);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const payload: TravelPackage = {
-      from: form.from,
-      to: form.to,
-      startDate: form.startDate,
-      endDate: form.endDate,
-      basePrice: Number(form.basePrice),
-      includedServices: {
-        food: form.food,
-        accommodation: form.accommodation,
-      },
-    };
-
-    if (editId) {
-      await api.put(`/packages/${editId}`, payload);
-    } else {
-      await api.post("/packages", payload);
-    }
-
-    setForm({
-      from: "",
-      to: "",
-      startDate: "",
-      endDate: "",
-      basePrice: 0,
-      food: false,
-      accommodation: false,
-    });
-    setEditId(null);
+  useEffect(() => {
     fetchPackages();
-  };
+  }, []);
 
   const handleDelete = async (id: string) => {
     await api.delete(`/packages/${id}`);
     fetchPackages();
   };
 
-  const handleEdit = (pkg: TravelPackage) => {
-    setForm({
-      from: pkg.from,
-      to: pkg.to,
-      startDate: pkg.startDate.slice(0, 10),
-      endDate: pkg.endDate.slice(0, 10),
-      basePrice: pkg.basePrice,
-      food: pkg.includedServices?.food,
-      accommodation: pkg.includedServices?.accommodation,
-    });
-    setEditId(pkg._id || null);
-  };
-
-  useEffect(() => {
-    fetchPackages();
-  }, []);
-
   return (
-    <div className="max-w-4xl mx-auto py-10 space-y-8 px-4">
-      <h2 className="text-2xl font-bold text-indigo-700">
-        Manage Travel Packages
-      </h2>
+    <div className="max-w-6xl mx-auto py-10 px-4">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-semibold">Manage Travel Packages</h2>
+        <button
+          onClick={() => navigate("/packages/new")}
+          className="bg-indigo-600 text-white px-5 py-2 rounded-lg shadow hover:bg-indigo-700 transition"
+        >
+          + Add New
+        </button>
+      </div>
 
-      <PackageForm
-        form={form}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        isEditing={!!editId}
-      />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {packages.map((pkg) => (
           <div
             key={pkg._id}
-            className="border p-4 rounded shadow bg-white space-y-1"
+            className="bg-white rounded-2xl shadow-md p-5 hover:shadow-lg transition border"
           >
-            <h3 className="font-semibold text-lg">
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">
               {pkg.from} ➡ {pkg.to}
             </h3>
-            <p className="text-sm text-gray-600">
-              Start: {pkg.startDate.slice(0, 10)}
+            <p className="text-sm text-gray-500">
+              {pkg.startDate.slice(0, 10)} to {pkg.endDate.slice(0, 10)}
             </p>
-            <p className="text-sm text-gray-600">
-              End: {pkg.endDate.slice(0, 10)}
-            </p>
-            <p className="text-sm">Price: ₹{pkg.basePrice}</p>
-            <p className="text-sm">
-              Services: {pkg.includedServices.food && "Food"}{" "}
-              {pkg.includedServices.accommodation && "Accommodation"}
-            </p>
-            <div className="flex gap-2 mt-2">
+            <p className="text-sm font-medium mt-2">Price: ₹{pkg.basePrice}</p>
+
+            <div className="flex flex-wrap gap-2 mt-3">
+              {pkg.includedServices.food && (
+                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                  🍱 Food
+                </span>
+              )}
+              {pkg.includedServices.accommodation && (
+                <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                  🏨 Accommodation
+                </span>
+              )}
+            </div>
+
+            <div className="flex gap-2 mt-4">
               <button
-                onClick={() => handleEdit(pkg)}
-                className="px-3 py-1 text-sm bg-yellow-400 rounded"
+                onClick={() => navigate(`/packages/edit/${pkg._id}`)}
+                className="flex-1 px-3 py-1 bg-yellow-400 hover:bg-yellow-500 text-sm rounded-md text-white"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(pkg._id!)}
-                className="px-3 py-1 text-sm bg-red-500 text-white rounded"
+                className="flex-1 px-3 py-1 bg-red-500 hover:bg-red-600 text-sm rounded-md text-white"
               >
                 Delete
               </button>

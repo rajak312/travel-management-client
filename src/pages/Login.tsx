@@ -6,8 +6,10 @@ import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const LoginTabs = () => {
+  const { login } = useAuth();
   const [activeTab, setActiveTab] = useState<"user" | "admin">("user");
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
@@ -23,8 +25,13 @@ const LoginTabs = () => {
 
     try {
       const res = await api.post("/auth/login", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
+      login(res.data.user, res.data.token);
+
+      if (res.data.user.role === "admin") {
+        navigate("/packages");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       const axiosErr = err as AxiosError<{ message: string }>;
       setError(axiosErr.response?.data?.message || "Login failed");
@@ -32,7 +39,7 @@ const LoginTabs = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
   };
 
   return (
@@ -104,7 +111,7 @@ const LoginTabs = () => {
             <p className="text-sm text-center text-gray-500 mt-4">
               Don't have an account?{" "}
               <Link
-                to="/user/signup"
+                to="/signup"
                 className="text-indigo-600 font-medium hover:underline"
               >
                 Sign up
