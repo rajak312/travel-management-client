@@ -6,6 +6,7 @@ import AdminBookings from "./pages/admin/AdminBookings";
 import EditPackage from "./pages/admin/EditPackage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdminUserBookings from "./pages/admin/AdminUserBookings";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/packages/new" element={<EditPackage />} />
         <Route path="/packages/edit/:id" element={<EditPackage />} />
         <Route path="/bookings" element={<AdminBookings />} />
+        <Route path="/admin/users-bookings" element={<AdminUserBookings />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={2000} />
     </>
