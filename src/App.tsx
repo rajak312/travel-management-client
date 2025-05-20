@@ -4,14 +4,16 @@ import Signup from "./pages/Signup";
 import ManagePackages from "./pages/admin/ManagePackages";
 import AdminBookings from "./pages/admin/AdminBookings";
 import EditPackage from "./pages/admin/EditPackage";
+import AdminUserBookings from "./pages/admin/AdminUserBookings";
+import Home from "./pages/Home"; // ✅ Import Home
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AdminUserBookings from "./pages/admin/AdminUserBookings";
 
 function App() {
   return (
     <>
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/packages" element={<ManagePackages />} />
