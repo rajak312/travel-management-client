@@ -1,11 +1,12 @@
 import React from "react";
 
 interface InputProps {
-  label: string;
-  name: string;
+  label?: string;
+  name?: string;
   type?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -14,6 +15,7 @@ const Input: React.FC<InputProps> = ({
   type = "text",
   value,
   onChange,
+  placeholder,
 }) => (
   <div className="mb-4">
     <label htmlFor={name} className="block mb-1 font-medium text-gray-700">
@@ -21,10 +23,13 @@ const Input: React.FC<InputProps> = ({
     </label>
     <input
       id={name}
-      name={name}
-      type={type}
-      value={value}
-      onChange={onChange}
+      {...{
+        name,
+        type,
+        value,
+        placeholder,
+        onChange,
+      }}
       className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-indigo-300"
     />
   </div>
