@@ -98,7 +98,7 @@ const LoginTabs = () => {
             onChange={handleChange}
           />
           {error && <p className="text-sm text-red-500 text-center">{error}</p>}
-          <Button type="submit" text="Continue" />
+          <Button type="submit" children="Continue" />
         </form>
 
         {/* Google Login (User Only) */}

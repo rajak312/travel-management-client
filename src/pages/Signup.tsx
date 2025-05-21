@@ -64,7 +64,7 @@ const Signup: React.FC = () => {
               onChange={handleChange}
             />
 
-            <Button type="submit" text="Sign Up" />
+            <Button type="submit" children="Sign Up" />
           </form>
         </div>
 
