@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../utils/api";
-
-interface Booking {
-  _id: string;
-  startDate: string;
-  endDate: string;
-  basePrice: number;
-  travelPackage: {
-    from: string;
-    to: string;
-  };
-}
+import { Booking } from "../../types/Booking";
 
 interface UserWithBookings {
   user: {
@@ -67,9 +57,13 @@ const AdminUserBookings = () => {
                   <tr key={b._id} className="border-t hover:bg-gray-50">
                     <td className="px-3 py-2">{b.travelPackage.from}</td>
                     <td className="px-3 py-2">{b.travelPackage.to}</td>
-                    <td className="px-3 py-2">{formatDate(b.startDate)}</td>
-                    <td className="px-3 py-2">{formatDate(b.endDate)}</td>
-                    <td className="px-3 py-2">₹{b.basePrice}</td>
+                    <td className="px-3 py-2">
+                      {formatDate(b.travelPackage.startDate)}
+                    </td>
+                    <td className="px-3 py-2">
+                      {formatDate(b.travelPackage.endDate)}
+                    </td>
+                    <td className="px-3 py-2">₹{b.totalPrice}</td>
                   </tr>
                 ))}
               </tbody>

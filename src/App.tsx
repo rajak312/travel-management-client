@@ -5,9 +5,11 @@ import ManagePackages from "./pages/admin/ManagePackages";
 import AdminBookings from "./pages/admin/AdminBookings";
 import EditPackage from "./pages/admin/EditPackage";
 import AdminUserBookings from "./pages/admin/AdminUserBookings";
-import Home from "./pages/Home"; // ✅ Import Home
+import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PackageDetails from "./pages/PackageDetails";
+import UserBookings from "./pages/UserBookings";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/packages/edit/:id" element={<EditPackage />} />
         <Route path="/bookings" element={<AdminBookings />} />
         <Route path="/admin/users-bookings" element={<AdminUserBookings />} />
+        <Route path="/packages/book/:id" element={<PackageDetails />} />
+        <Route path="/my-bookings" element={<UserBookings />} />
       </Routes>
       <ToastContainer position="top-right" autoClose={2000} />
     </>

@@ -4,6 +4,7 @@ import { TravelPackage } from "../types/Package";
 import PackageCard from "../components/PackageCard";
 import Input from "../components/Input";
 import Button from "../components/Button";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
   const [packages, setPackages] = useState<TravelPackage[]>([]);
@@ -13,6 +14,7 @@ const Home: React.FC = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPackages = async () => {
@@ -25,11 +27,12 @@ const Home: React.FC = () => {
   // Re-filter and sort whenever filters or sort option change
   useEffect(() => {
     const filteredData = packages
-      .filter(pkg =>
-        (!from || pkg.from.toLowerCase().includes(from.toLowerCase())) &&
-        (!to || pkg.to.toLowerCase().includes(to.toLowerCase())) &&
-        (!startDate || new Date(pkg.startDate) >= new Date(startDate)) &&
-        (!endDate || new Date(pkg.endDate) <= new Date(endDate))
+      .filter(
+        (pkg) =>
+          (!from || pkg.from.toLowerCase().includes(from.toLowerCase())) &&
+          (!to || pkg.to.toLowerCase().includes(to.toLowerCase())) &&
+          (!startDate || new Date(pkg.startDate) >= new Date(startDate)) &&
+          (!endDate || new Date(pkg.endDate) <= new Date(endDate))
       )
       .sort((a, b) =>
         sort === "asc" ? a.basePrice - b.basePrice : b.basePrice - a.basePrice
@@ -45,11 +48,33 @@ const Home: React.FC = () => {
       </h1>
 
       <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
-        <Input placeholder="From" value={from} onChange={(e) => setFrom(e.target.value)} />
-        <Input placeholder="To" value={to} onChange={(e) => setTo(e.target.value)} />
-        <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-        <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-        <Button onClick={() => { /* No-op, handled by useEffect */ }}>Apply Filters</Button>
+        <Input
+          placeholder="From"
+          value={from}
+          onChange={(e) => setFrom(e.target.value)}
+        />
+        <Input
+          placeholder="To"
+          value={to}
+          onChange={(e) => setTo(e.target.value)}
+        />
+        <Input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+        <Input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+        <Button
+          onClick={() => {
+            /* No-op, handled by useEffect */
+          }}
+        >
+          Apply Filters
+        </Button>
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
@@ -65,11 +90,22 @@ const Home: React.FC = () => {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-gray-500 text-center">No packages found matching your criteria.</p>
+        <p className="text-gray-500 text-center">
+          No packages found matching your criteria.
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           {filtered.map((pkg) => (
-            <PackageCard key={pkg._id} pkg={pkg} />
+            <PackageCard
+              key={pkg._id}
+              endDate={pkg.endDate}
+              from={pkg.from}
+              includedServices={pkg.includedServices}
+              price={pkg.basePrice}
+              startDate={pkg.startDate}
+              to={pkg.to}
+              onClick={() => navigate(`/packages/book/${pkg._id}`)}
+            />
           ))}
         </div>
       )}
