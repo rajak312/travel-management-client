@@ -6,7 +6,7 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 
-const Home: React.FC = () => {
+const UserDashboard: React.FC = () => {
   const [packages, setPackages] = useState<TravelPackage[]>([]);
   const [filtered, setFiltered] = useState<TravelPackage[]>([]);
   const [from, setFrom] = useState("");
@@ -24,7 +24,6 @@ const Home: React.FC = () => {
     fetchPackages();
   }, []);
 
-  // Re-filter and sort whenever filters or sort option change
   useEffect(() => {
     const filteredData = packages
       .filter(
@@ -47,7 +46,7 @@ const Home: React.FC = () => {
         Find Your Perfect Trip 🌍
       </h1>
 
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
+      <div className="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-4">
         <Input
           placeholder="From"
           value={from}
@@ -84,8 +83,8 @@ const Home: React.FC = () => {
           onChange={(e) => setSort(e.target.value as "asc" | "desc")}
           className="border px-3 py-2 rounded text-sm"
         >
-          <option value="asc">Sort: Price Low → High</option>
-          <option value="desc">Sort: Price High → Low</option>
+          <option value="asc">Low → High</option>
+          <option value="desc">High → Low</option>
         </select>
       </div>
 
@@ -113,4 +112,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default UserDashboard;

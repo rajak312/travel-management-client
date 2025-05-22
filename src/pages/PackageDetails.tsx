@@ -57,7 +57,7 @@ const PackageDetails = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-10 mt-6">
-      <BackLink to="/" label="Back to Package List" />
+      <BackLink to="/dashboard" label="Back to Package List" />
       <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-10 border border-gray-200">
         <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
           {pkg.from} ➜ {pkg.to}

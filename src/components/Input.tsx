@@ -17,7 +17,7 @@ const Input: React.FC<InputProps> = ({
   onChange,
   placeholder,
 }) => (
-  <div className="mb-4">
+  <div>
     <label htmlFor={name} className="block mb-1 font-medium text-gray-700">
       {label}
     </label>

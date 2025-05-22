@@ -5,26 +5,41 @@ import ManagePackages from "./pages/admin/ManagePackages";
 import AdminBookings from "./pages/admin/AdminBookings";
 import EditPackage from "./pages/admin/EditPackage";
 import AdminUserBookings from "./pages/admin/AdminUserBookings";
-import Home from "./pages/Home";
+import UserDashboard from "./pages/UserDashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PackageDetails from "./pages/PackageDetails";
 import UserBookings from "./pages/UserBookings";
+import UserLayout from "./components/UserLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/packages" element={<ManagePackages />} />
-        <Route path="/packages/new" element={<EditPackage />} />
-        <Route path="/packages/edit/:id" element={<EditPackage />} />
-        <Route path="/bookings" element={<AdminBookings />} />
-        <Route path="/admin/users-bookings" element={<AdminUserBookings />} />
-        <Route path="/packages/book/:id" element={<PackageDetails />} />
-        <Route path="/my-bookings" element={<UserBookings />} />
+        <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
+          <Route element={<UserLayout />}>
+            <Route path="/dashboard" element={<UserDashboard />} />
+            <Route path="/packages/book/:id" element={<PackageDetails />} />
+            <Route path="/my-bookings" element={<UserBookings />} />
+          </Route>
+        </Route>
+        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+          <Route element={<UserLayout />}>
+            <Route path="/packages" element={<ManagePackages />} />
+            <Route path="/packages/new" element={<EditPackage />} />
+            <Route path="/packages/edit/:id" element={<EditPackage />} />
+            <Route path="/bookings" element={<AdminBookings />} />
+            <Route
+              path="/admin/users-bookings"
+              element={<AdminUserBookings />}
+            />
+            <Route path="/packages/book/:id" element={<PackageDetails />} />
+            <Route path="/my-bookings" element={<UserBookings />} />
+          </Route>
+        </Route>
       </Routes>
       <ToastContainer position="top-right" autoClose={2000} />
     </>

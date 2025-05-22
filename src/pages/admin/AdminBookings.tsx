@@ -25,11 +25,11 @@ const AdminBookings = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-indigo-700 mb-6">All Bookings</h1>
+      <h1 className="text-2xl font-bold text-gray-950 mb-6">All Bookings</h1>
 
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded shadow-md text-sm">
-          <thead className="bg-indigo-600 text-white">
+          <thead className="bg-gray-500 text-white">
             <tr>
               <th className="px-4 py-2 text-left">User</th>
               <th className="px-4 py-2 text-left">Package</th>
