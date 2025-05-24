@@ -5,9 +5,14 @@ import api from "../utils/api";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
+import { UserSignUpPayload } from "../types/User";
 
 const Signup: React.FC = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState<UserSignUpPayload>({
+    name: "",
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -20,8 +25,6 @@ const Signup: React.FC = () => {
 
     try {
       const res = await api.post("/auth/register", form);
-
-      // Save auth globally
       login(res.data.user, res.data.token);
 
       toast.success("Account created successfully 🎉");

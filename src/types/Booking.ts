@@ -14,3 +14,16 @@ export interface Booking {
   totalPrice: number;
   createdAt: string;
 }
+
+export interface BookingPayload extends Pick<Booking, "selectedOptions"> {
+  packageId: string;
+}
+
+export interface UserWithBookings {
+  user: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  bookings: Booking[];
+}

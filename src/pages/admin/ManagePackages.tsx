@@ -1,39 +1,25 @@
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../utils/api";
 import { TravelPackage } from "../../types/Package";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
+import { useDeletePackage, usePackages } from "../../api/package";
 
 type Status = "all" | "upcoming" | "active" | "completed";
 
 const ManagePackages: React.FC = () => {
-  const [packages, setPackages] = useState<TravelPackage[]>([]);
   const [filter, setFilter] = useState<Status>("all");
-  const [isPending, startTransition] = useTransition();
-  const [isPackagePending, startPackageTransition] = useTransition();
   const navigate = useNavigate();
+  const { data: packages = [], isPending: isPackagePending } = usePackages();
+  const { mutate: deletePackage, isPending: isDeletePending } =
+    useDeletePackage();
 
-  const fetchPackages = async () =>
-    startPackageTransition(async () => {
-      const res = await api.get<TravelPackage[]>("/packages");
-      setPackages(res.data);
+  const handleDelete = (id: string) => {
+    deletePackage(id, {
+      onSuccess: () => toast.success("Package deleted successfully 🗑️"),
+      onError: () => toast.error("Failed to delete package"),
     });
-
-  useEffect(() => {
-    fetchPackages();
-  }, []);
-
-  const handleDelete = async (id: string) =>
-    startTransition(async () => {
-      try {
-        await api.delete(`/packages/${id}`);
-        toast.success("Package deleted successfully 🗑️");
-        fetchPackages();
-      } catch (err) {
-        toast.error("Failed to delete package");
-      }
-    });
+  };
 
   const getStatus = (pkg: TravelPackage): Status => {
     const today = new Date();
@@ -71,7 +57,7 @@ const ManagePackages: React.FC = () => {
         </div>
 
         {filtered.length === 0 ? (
-          isPending ? (
+          isPackagePending ? (
             <Loader />
           ) : (
             <p className="text-center text-gray-500">No packages to display.</p>

@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import api from "../../utils/api";
-import { Booking } from "../../types/Booking";
+import { useAllBookings } from "../../api/booking";
 
 const getStatus = (start: string, end: string) => {
   const today = new Date();
@@ -12,19 +10,7 @@ const getStatus = (start: string, end: string) => {
 };
 
 const AdminBookings = () => {
-  const [bookings, setBookings] = useState<Booking[]>([]);
-
-  const fetchBookings = async () => {
-    const res = await api.get<Booking[]>("/bookings/all");
-    setBookings(res.data);
-  };
-
-  useEffect(() => {
-    fetchBookings();
-  }, []);
-
-  console.log("bookings", bookings);
-
+  const { data: bookings } = useAllBookings();
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-950 mb-6">All Bookings</h1>
@@ -42,7 +28,7 @@ const AdminBookings = () => {
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking) => (
+            {bookings?.map((booking) => (
               <tr key={booking._id} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-2">
                   <div className="font-medium">{booking.user.name}</div>
@@ -86,7 +72,7 @@ const AdminBookings = () => {
                 </td>
               </tr>
             ))}
-            {bookings.length === 0 && (
+            {bookings?.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
                   No bookings found.

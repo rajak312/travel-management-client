@@ -2,42 +2,47 @@ import { useState } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { FcGoogle } from "react-icons/fc";
-import api from "../utils/api";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { UserLoginPayload } from "../types/User";
+import { useLogin } from "../api/auth";
 
 const LoginTabs = () => {
   const { login } = useAuth();
   const [activeTab, setActiveTab] = useState<"user" | "admin">("user");
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
+  const [form, setForm] = useState<UserLoginPayload>({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
+  const { mutate: loginMutate } = useLogin();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
-    try {
-      const res = await api.post("/auth/login", form);
-      login(res.data.user, res.data.token);
-      toast.success(`Welcome back, ${res.data.user.name} 🎉`);
+    loginMutate(form, {
+      onSuccess: (data) => {
+        login(data.user, data.token);
+        toast.success(`Welcome back, ${data.user.name} 🎉`);
 
-      if (res.data.user.role === "admin") {
-        navigate("/packages");
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      const axiosErr = err as AxiosError<{ message: string }>;
-      toast.error(axiosErr.response?.data?.message || "Login failed");
-    }
+        if (data.user.role === "admin") {
+          navigate("/packages");
+        } else {
+          navigate("/dashboard");
+        }
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message || "Login failed. Please try again.";
+        toast.error(message);
+      },
+    });
   };
 
   const handleGoogleLogin = () => {
@@ -97,7 +102,6 @@ const LoginTabs = () => {
             value={form.password}
             onChange={handleChange}
           />
-          {error && <p className="text-sm text-red-500 text-center">{error}</p>}
           <Button type="submit" children="Continue" />
         </form>
         {/* Google Login (User Only) */}

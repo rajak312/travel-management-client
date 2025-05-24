@@ -1,32 +1,19 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import api from "../utils/api";
-import { TravelPackage } from "../types/Package";
 import { BackLink } from "../components/BackLink";
+import { useCreateBooking } from "../api/booking";
+import { usePackage } from "../api/package";
 
 const PackageDetails = () => {
-  const { id } = useParams();
+  const { id = "" } = useParams();
   const navigate = useNavigate();
-  const [pkg, setPkg] = useState<TravelPackage | null>(null);
   const [selectedFood, setSelectedFood] = useState(false);
   const [selectedAccommodation, setSelectedAccommodation] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
+  const bookingMutation = useCreateBooking();
+  const { data: pkg } = usePackage(id);
 
-  // Fetch package data
-  useEffect(() => {
-    const fetchPackage = async () => {
-      try {
-        const res = await api.get(`/packages/${id}`);
-        setPkg(res.data);
-      } catch (err) {
-        toast.error("Failed to load package");
-      }
-    };
-    fetchPackage();
-  }, [id]);
-
-  // Calculate total price
   useEffect(() => {
     if (pkg) {
       let price = pkg.basePrice;
@@ -36,21 +23,25 @@ const PackageDetails = () => {
     }
   }, [pkg, selectedFood, selectedAccommodation]);
 
-  // Booking handler
   const handleBooking = async () => {
-    try {
-      await api.post("/bookings", {
+    bookingMutation.mutate(
+      {
         packageId: id,
         selectedOptions: {
           food: selectedFood,
           accommodation: selectedAccommodation,
         },
-      });
-      toast.success("Booking successful!");
-      navigate("/my-bookings");
-    } catch (err) {
-      toast.error("Booking failed");
-    }
+      },
+      {
+        onSuccess: () => {
+          toast.success("Booking successful!");
+          navigate("/my-bookings");
+        },
+        onError: () => {
+          toast.error("Booking failed");
+        },
+      }
+    );
   };
 
   if (!pkg) return <p className="text-center mt-10">Loading package...</p>;

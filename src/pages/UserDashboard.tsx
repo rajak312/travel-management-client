@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import api from "../utils/api";
 import { TravelPackage } from "../types/Package";
 import PackageCard from "../components/PackageCard";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
+import { usePackages } from "../api/package";
 
 const UserDashboard: React.FC = () => {
-  const [packages, setPackages] = useState<TravelPackage[]>([]);
+  const { data } = usePackages();
   const [filtered, setFiltered] = useState<TravelPackage[]>([]);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -17,15 +17,8 @@ const UserDashboard: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchPackages = async () => {
-      const res = await api.get<TravelPackage[]>("/packages");
-      setPackages(res.data);
-    };
-    fetchPackages();
-  }, []);
-
-  useEffect(() => {
-    const filteredData = packages
+    if (!data) return;
+    const filteredData = data
       .filter(
         (pkg) =>
           (!from || pkg.from.toLowerCase().includes(from.toLowerCase())) &&
@@ -38,7 +31,7 @@ const UserDashboard: React.FC = () => {
       );
 
     setFiltered(filteredData);
-  }, [packages, from, to, startDate, endDate, sort]);
+  }, [data, from, to, startDate, endDate, sort]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">

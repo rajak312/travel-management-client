@@ -1,24 +1,7 @@
-import { useEffect, useState } from "react";
-import api from "../../utils/api";
-import { Booking } from "../../types/Booking";
-
-interface UserWithBookings {
-  user: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  bookings: Booking[];
-}
+import { useUsersAndBookings } from "../../api/booking";
 
 const AdminUserBookings = () => {
-  const [data, setData] = useState<UserWithBookings[]>([]);
-
-  useEffect(() => {
-    api.get("/admin/users-bookings").then((res) => {
-      setData(res.data);
-    });
-  }, []);
+  const { data } = useUsersAndBookings();
 
   const formatDate = (date: string) =>
     new Date(date).toLocaleDateString("en-IN");
@@ -29,7 +12,7 @@ const AdminUserBookings = () => {
         Users and Their Bookings
       </h2>
 
-      {data.map(({ user, bookings }) => (
+      {data?.map(({ user, bookings }) => (
         <div
           key={user._id}
           className="bg-white rounded-xl shadow mb-6 p-5 space-y-4"

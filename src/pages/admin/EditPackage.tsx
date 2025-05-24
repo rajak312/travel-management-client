@@ -1,14 +1,21 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import api from "../../utils/api";
 import { TravelPackage } from "../../types/Package";
 import PackageForm from "../../components/PackageForm";
 import { toast } from "react-toastify";
+import {
+  useCreatePackage,
+  usePackage,
+  useUpdatePackage,
+} from "../../api/package";
 
 const EditPackage = () => {
-  const { id } = useParams();
+  const { id = "" } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
+  const { data: pkg } = usePackage(id);
+  const createMutation = useCreatePackage();
+  const updateMutation = useUpdatePackage();
 
   const [form, setForm] = useState({
     from: "",
@@ -21,21 +28,17 @@ const EditPackage = () => {
   });
 
   useEffect(() => {
-    if (isEdit) {
-      api.get(`/packages/${id}`).then((res) => {
-        const pkg = res.data;
-        setForm({
-          from: pkg.from,
-          to: pkg.to,
-          startDate: pkg.startDate.slice(0, 10),
-          endDate: pkg.endDate.slice(0, 10),
-          basePrice: pkg.basePrice,
-          food: pkg.includedServices.food,
-          accommodation: pkg.includedServices.accommodation,
-        });
-      });
-    }
-  }, [id, isEdit]);
+    if (!pkg) return;
+    setForm({
+      from: pkg.from,
+      to: pkg.to,
+      startDate: pkg.startDate.slice(0, 10),
+      endDate: pkg.endDate.slice(0, 10),
+      basePrice: pkg.basePrice,
+      food: pkg.includedServices.food,
+      accommodation: pkg.includedServices.accommodation,
+    });
+  }, [pkg]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -47,7 +50,6 @@ const EditPackage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const payload: TravelPackage = {
       from: form.from,
       to: form.to,
@@ -60,19 +62,34 @@ const EditPackage = () => {
       },
     };
 
-    try {
-      if (isEdit) {
-        await api.put(`/packages/${id}`, payload);
-        toast.success("Package updated successfully ✅");
-      } else {
-        await api.post("/packages", payload);
-        toast.success("Package created successfully 🎉");
-      }
-
-      navigate("/packages");
-    } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong 😓");
+    if (isEdit) {
+      updateMutation.mutate(
+        {
+          data: payload,
+          id,
+        },
+        {
+          onSuccess: () => {
+            toast.success("Package updated successfully ✅");
+            navigate("/packages");
+          },
+          onError: (error) => {
+            console.error(error);
+            toast.error("Something went wrong 😓");
+          },
+        }
+      );
+    } else {
+      createMutation.mutate(payload, {
+        onSuccess: () => {
+          toast.success("Package Created successfully ✅");
+          navigate("/packages");
+        },
+        onError: (error) => {
+          console.error(error);
+          toast.error("Something went wrong 😓");
+        },
+      });
     }
   };
 
