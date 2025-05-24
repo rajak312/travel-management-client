@@ -9,7 +9,7 @@ export const login = async (user: UserLoginPayload) => {
 };
 
 export const signup = async (user: UserSignUpPayload) => {
-  const res = await api.post("/api/auth/signup", user);
+  const res = await api.post("/api/auth/register", user);
   return res.data;
 };
 

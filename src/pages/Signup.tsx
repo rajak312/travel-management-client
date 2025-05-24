@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import api from "../utils/api";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { UserSignUpPayload } from "../types/User";
+import { useSignup } from "../api/auth";
 
 const Signup: React.FC = () => {
   const [form, setForm] = useState<UserSignUpPayload>({
@@ -15,6 +15,7 @@ const Signup: React.FC = () => {
   });
   const navigate = useNavigate();
   const { login } = useAuth();
+  const signupMutation = useSignup();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,19 +23,19 @@ const Signup: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    try {
-      const res = await api.post("/auth/register", form);
-      login(res.data.user, res.data.token);
-
-      toast.success("Account created successfully 🎉");
-
-      navigate("/user/dashboard");
-    } catch (err) {
-      const axiosErr = err as import("axios").AxiosError<{ message: string }>;
-      const message = axiosErr.response?.data?.message || "Signup failed";
-      toast.error(message);
-    }
+    signupMutation.mutate(form, {
+      onSuccess: (data) => {
+        console.log("data", data);
+        login(data.user, data.token);
+        toast.success("Account created successfully 🎉");
+        navigate("/dashboard");
+      },
+      onError: (error: any) => {
+        const message =
+          error?.response?.data?.message || "Signup failed. Please try again.";
+        toast.error(message);
+      },
+    });
   };
 
   return (

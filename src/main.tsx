@@ -13,11 +13,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={client}>
-        <SocketContext>
-          <AuthProvider>
+        <AuthProvider>
+          <SocketContext>
             <App />
-          </AuthProvider>
-        </SocketContext>
+          </SocketContext>
+        </AuthProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>
