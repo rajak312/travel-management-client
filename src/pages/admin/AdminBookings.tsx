@@ -23,6 +23,8 @@ const AdminBookings = () => {
     fetchBookings();
   }, []);
 
+  console.log("bookings", bookings);
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold text-gray-950 mb-6">All Bookings</h1>

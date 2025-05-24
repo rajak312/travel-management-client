@@ -100,7 +100,6 @@ const LoginTabs = () => {
           {error && <p className="text-sm text-red-500 text-center">{error}</p>}
           <Button type="submit" children="Continue" />
         </form>
-
         {/* Google Login (User Only) */}
         {activeTab === "user" && (
           <>
