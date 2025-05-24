@@ -51,28 +51,28 @@ export const SocketContext: React.FC<{ children: React.ReactNode }> = ({
       setIsConnected(false);
     };
 
-    const handlePackageCreated = (data: any) => {
+    const handlePackageCreated = (data: unknown) => {
       console.info("📦 Package created:", data);
       queryClient.invalidateQueries({
         queryKey: ["packages"],
       });
     };
 
-    const handlePackageUpdated = (data: any) => {
+    const handlePackageUpdated = (data: unknown) => {
       console.info("✏️ Package updated:", data);
       queryClient.invalidateQueries({
         queryKey: ["packages"],
       });
     };
 
-    const handlePackageDeleted = (data: any) => {
+    const handlePackageDeleted = (data: unknown) => {
       console.info("🗑️ Package deleted:", data);
       queryClient.invalidateQueries({
         queryKey: ["packages"],
       });
     };
 
-    const handlePackageBooked = (data: any) => {
+    const handlePackageBooked = (data: unknown) => {
       console.info("📅 Package booked:", data);
       queryClient.invalidateQueries({
         queryKey: ["usersAndBookings", "bookings", "myBookings"],

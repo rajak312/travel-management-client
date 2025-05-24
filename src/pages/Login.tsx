@@ -8,6 +8,7 @@ import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { UserLoginPayload } from "../types/User";
 import { useLogin } from "../api/auth";
+import { AxiosError } from "axios";
 
 const LoginTabs = () => {
   const { login } = useAuth();
@@ -37,9 +38,17 @@ const LoginTabs = () => {
           navigate("/dashboard");
         }
       },
-      onError: (error: any) => {
-        const message =
-          error?.response?.data?.message || "Login failed. Please try again.";
+
+      onError: (error: Error) => {
+        let message = "Login failed. Please try again.";
+        if (
+          error instanceof AxiosError &&
+          error.response?.data &&
+          typeof error.response.data === "object" &&
+          "message" in error.response.data
+        ) {
+          message = (error.response.data as { message: string }).message;
+        }
         toast.error(message);
       },
     });

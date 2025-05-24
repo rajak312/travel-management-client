@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import { UserSignUpPayload } from "../types/User";
 import { useSignup } from "../api/auth";
+import { AxiosError } from "axios";
 
 const Signup: React.FC = () => {
   const [form, setForm] = useState<UserSignUpPayload>({
@@ -30,9 +31,18 @@ const Signup: React.FC = () => {
         toast.success("Account created successfully 🎉");
         navigate("/dashboard");
       },
-      onError: (error: any) => {
-        const message =
-          error?.response?.data?.message || "Signup failed. Please try again.";
+      onError: (error: Error) => {
+        let message = "Signup failed. Please try again.";
+
+        if (
+          error instanceof AxiosError &&
+          error.response?.data &&
+          typeof error.response.data === "object" &&
+          "message" in error.response.data
+        ) {
+          message = (error.response.data as { message: string }).message;
+        }
+
         toast.error(message);
       },
     });

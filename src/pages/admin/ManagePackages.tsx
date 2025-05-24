@@ -11,8 +11,7 @@ const ManagePackages: React.FC = () => {
   const [filter, setFilter] = useState<Status>("all");
   const navigate = useNavigate();
   const { data: packages = [], isPending: isPackagePending } = usePackages();
-  const { mutate: deletePackage, isPending: isDeletePending } =
-    useDeletePackage();
+  const { mutate: deletePackage } = useDeletePackage();
 
   const handleDelete = (id: string) => {
     deletePackage(id, {
