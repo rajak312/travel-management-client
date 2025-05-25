@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { useNavigate, Link } from "react-router-dom";
@@ -15,8 +15,17 @@ const Signup: React.FC = () => {
     password: "",
   });
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const signupMutation = useSignup();
+
+  useEffect(() => {
+    if (!user) return;
+    if (user.role === "admin") {
+      navigate("/packages");
+      return;
+    }
+    navigate("/dashboard");
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });

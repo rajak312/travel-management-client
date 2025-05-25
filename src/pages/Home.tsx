@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
+  const { user } = useAuth();
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex items-center justify-center px-4">
       <div className="max-w-4xl w-full text-center p-10 bg-white rounded-2xl shadow-xl">
@@ -13,18 +16,36 @@ const Home = () => {
           personalized.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/login">
-            <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition">
-              Sign In
-            </button>
-          </Link>
-          <Link to="/signup">
-            <button className="px-6 py-3 bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-100 rounded-xl transition">
-              Sign Up
-            </button>
-          </Link>
-        </div>
+        {user ? (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {user.role === "user" ? (
+              <Link to="/dashboard">
+                <button className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl transition">
+                  Go to Dashboard
+                </button>
+              </Link>
+            ) : user.role === "admin" ? (
+              <Link to="/packages">
+                <button className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl transition">
+                  Manage Packages
+                </button>
+              </Link>
+            ) : null}
+          </div>
+        ) : (
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/login">
+              <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition">
+                Sign In
+              </button>
+            </Link>
+            <Link to="/signup">
+              <button className="px-6 py-3 bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-100 rounded-xl transition">
+                Sign Up
+              </button>
+            </Link>
+          </div>
+        )}
 
         <div className="mt-10 text-sm text-gray-500">
           <p>Powered by MERN Stack · Secure Auth · User-Friendly Interface</p>

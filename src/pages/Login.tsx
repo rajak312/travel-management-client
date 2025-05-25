@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { FcGoogle } from "react-icons/fc";
@@ -11,7 +11,7 @@ import { useLogin } from "../api/auth";
 import { AxiosError } from "axios";
 
 const LoginTabs = () => {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const [activeTab, setActiveTab] = useState<"user" | "admin">("user");
   const [form, setForm] = useState<UserLoginPayload>({
     email: "",
@@ -23,6 +23,15 @@ const LoginTabs = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    if (!user) return;
+    if (user.role === "admin") {
+      navigate("/packages");
+      return;
+    }
+    navigate("/dashboard");
+  }, [user]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

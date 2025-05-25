@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
     } else {
-      const publicRoutes = ["/login", "/signup", "/oauth-success"];
+      const publicRoutes = ["/login", "/signup", "/oauth-success", "/"];
       if (!publicRoutes.includes(location.pathname)) {
         navigate("/login");
       }
