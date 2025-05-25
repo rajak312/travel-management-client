@@ -13,7 +13,7 @@ const EditPackage = () => {
   const { id = "" } = useParams();
   const navigate = useNavigate();
   const isEdit = Boolean(id);
-  const { data: pkg } = usePackage(id);
+  const { data: pkg, isLoading } = usePackage(id);
   const createMutation = useCreatePackage();
   const updateMutation = useUpdatePackage();
 
@@ -28,17 +28,18 @@ const EditPackage = () => {
   });
 
   useEffect(() => {
-    if (!pkg) return;
-    setForm({
-      from: pkg.from,
-      to: pkg.to,
-      startDate: pkg.startDate.slice(0, 10),
-      endDate: pkg.endDate.slice(0, 10),
-      basePrice: pkg.basePrice,
-      food: pkg.includedServices.food,
-      accommodation: pkg.includedServices.accommodation,
-    });
-  }, [pkg]);
+    if (isEdit && pkg) {
+      setForm({
+        from: pkg.from,
+        to: pkg.to,
+        startDate: pkg.startDate.slice(0, 10),
+        endDate: pkg.endDate.slice(0, 10),
+        basePrice: pkg.basePrice,
+        food: pkg.includedServices.food,
+        accommodation: pkg.includedServices.accommodation,
+      });
+    }
+  }, [pkg, isEdit]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -48,8 +49,30 @@ const EditPackage = () => {
     }));
   };
 
+  const validateForm = () => {
+    if (!form.from || !form.to) {
+      toast.error("From and To fields are required");
+      return false;
+    }
+    if (!form.startDate || !form.endDate) {
+      toast.error("Start and End dates are required");
+      return false;
+    }
+    if (new Date(form.startDate) > new Date(form.endDate)) {
+      toast.error("Start date cannot be after End date");
+      return false;
+    }
+    if (form.basePrice <= 0) {
+      toast.error("Base price must be greater than 0");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     const payload: TravelPackage = {
       from: form.from,
       to: form.to,
@@ -64,17 +87,13 @@ const EditPackage = () => {
 
     if (isEdit) {
       updateMutation.mutate(
-        {
-          data: payload,
-          id,
-        },
+        { id, data: payload },
         {
           onSuccess: () => {
             toast.success("Package updated successfully ✅");
             navigate("/packages");
           },
-          onError: (error) => {
-            console.error(error);
+          onError: () => {
             toast.error("Something went wrong 😓");
           },
         }
@@ -82,11 +101,10 @@ const EditPackage = () => {
     } else {
       createMutation.mutate(payload, {
         onSuccess: () => {
-          toast.success("Package Created successfully ✅");
+          toast.success("Package created successfully ✅");
           navigate("/packages");
         },
-        onError: (error) => {
-          console.error(error);
+        onError: () => {
           toast.error("Something went wrong 😓");
         },
       });
@@ -103,12 +121,12 @@ const EditPackage = () => {
           ← Back to Package List
         </button>
       </div>
-
       <PackageForm
         form={form}
         onChange={handleChange}
         onSubmit={handleSubmit}
         isEditing={isEdit}
+        isDisabled={isEdit && isLoading}
       />
     </div>
   );

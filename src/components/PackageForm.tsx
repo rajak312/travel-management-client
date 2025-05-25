@@ -13,6 +13,7 @@ interface PackageFormProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   isEditing: boolean;
+  isDisabled?: boolean;
 }
 
 const PackageForm: React.FC<PackageFormProps> = ({
@@ -20,6 +21,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
   onChange,
   onSubmit,
   isEditing,
+  isDisabled,
 }) => {
   return (
     <form
@@ -42,6 +44,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
             onChange={onChange}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             required
+            disabled={isDisabled}
           />
         </div>
 
@@ -56,6 +59,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
             onChange={onChange}
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
             required
+            disabled={isDisabled}
           />
         </div>
       </div>
@@ -72,6 +76,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
             onChange={onChange}
             className="w-full px-3 py-2 border rounded-md"
             required
+            disabled={isDisabled}
           />
         </div>
 
@@ -86,6 +91,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
             onChange={onChange}
             className="w-full px-3 py-2 border rounded-md"
             required
+            disabled={isDisabled}
           />
         </div>
       </div>
@@ -101,6 +107,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
           onChange={onChange}
           className="w-full px-3 py-2 border rounded-md"
           required
+          disabled={isDisabled}
         />
       </div>
 
@@ -111,6 +118,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
             name="food"
             checked={form.food}
             onChange={onChange}
+            disabled={isDisabled}
           />
           Food
         </label>
@@ -121,6 +129,7 @@ const PackageForm: React.FC<PackageFormProps> = ({
             name="accommodation"
             checked={form.accommodation}
             onChange={onChange}
+            disabled={isDisabled}
           />
           Accommodation
         </label>
