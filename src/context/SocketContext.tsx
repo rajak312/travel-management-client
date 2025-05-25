@@ -30,7 +30,6 @@ export const SocketContext: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (!token) return;
-    console.log("token", token);
     const socket = io(
       import.meta.env.VITE_API_BASE_URL || "http://localhost:5000",
       {

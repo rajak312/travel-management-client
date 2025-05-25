@@ -12,6 +12,7 @@ import PackageDetails from "./pages/PackageDetails";
 import UserBookings from "./pages/UserBookings";
 import UserLayout from "./components/UserLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/" element={<Home />} />
         <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
           <Route element={<UserLayout />}>
             <Route path="/dashboard" element={<UserDashboard />} />
