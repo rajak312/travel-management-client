@@ -5,9 +5,11 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import { useNavigate } from "react-router-dom";
 import { usePackages } from "../api/package";
+import { useMyBookings } from "../api/booking";
 
 const UserDashboard: React.FC = () => {
   const { data } = usePackages();
+  const { data: bookings } = useMyBookings();
   const [filtered, setFiltered] = useState<TravelPackage[]>([]);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
@@ -15,6 +17,8 @@ const UserDashboard: React.FC = () => {
   const [endDate, setEndDate] = useState("");
   const [sort, setSort] = useState<"asc" | "desc">("asc");
   const navigate = useNavigate();
+  const bookedPackageIds =
+    bookings?.map((b) => b.travelPackage._id?.toString?.()) ?? [];
 
   useEffect(() => {
     if (!data) return;
@@ -87,18 +91,24 @@ const UserDashboard: React.FC = () => {
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filtered.map((pkg) => (
-            <PackageCard
-              key={pkg._id}
-              endDate={pkg.endDate}
-              from={pkg.from}
-              includedServices={pkg.includedServices}
-              price={pkg.basePrice}
-              startDate={pkg.startDate}
-              to={pkg.to}
-              onClick={() => navigate(`/packages/book/${pkg._id}`)}
-            />
-          ))}
+          {filtered.map((pkg) => {
+            const isBooked = bookedPackageIds.includes(pkg._id?.toString()!);
+            return (
+              <PackageCard
+                key={pkg._id}
+                endDate={pkg.endDate}
+                from={pkg.from}
+                includedServices={pkg.includedServices}
+                price={pkg.basePrice}
+                startDate={pkg.startDate}
+                to={pkg.to}
+                disabled={isBooked}
+                onClick={() =>
+                  !isBooked && navigate(`/packages/book/${pkg._id}`)
+                }
+              />
+            );
+          })}
         </div>
       )}
     </div>

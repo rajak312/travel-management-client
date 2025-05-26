@@ -10,6 +10,7 @@ export type PackageCardProps = Pick<
   onClick?: () => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  disabled?: boolean;
 };
 
 const PackageCard: React.FC<PackageCardProps> = ({
@@ -23,11 +24,16 @@ const PackageCard: React.FC<PackageCardProps> = ({
   onDelete,
   onEdit,
   isAdmin = false,
+  disabled,
 }) => {
   return (
     <div
-      className="cursor-pointer bg-white shadow rounded-xl p-4 hover:shadow-lg transition border"
-      onClick={onClick}
+      className={`p-4 rounded-xl transition border shadow ${
+        disabled
+          ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+          : "bg-white cursor-pointer hover:shadow-lg"
+      }`}
+      onClick={!disabled ? onClick : undefined}
     >
       <h3 className="text-lg font-semibold">
         {from} ➡ {to}
@@ -36,7 +42,7 @@ const PackageCard: React.FC<PackageCardProps> = ({
         {startDate.slice(0, 10)} to {endDate.slice(0, 10)}
       </p>
       <p className="text-sm font-medium mt-1">₹{price}</p>
-      <div className="mt-2 flex gap-2 flex-wrap">
+      <div className="mt-2 flex gap-2 flex-wrap min-h-[26px]">
         {includedServices.food && (
           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
             🍱 Food
@@ -48,6 +54,7 @@ const PackageCard: React.FC<PackageCardProps> = ({
           </span>
         )}
       </div>
+
       {isAdmin && (
         <div className="flex gap-2 mt-4">
           <button

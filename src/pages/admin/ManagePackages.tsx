@@ -78,7 +78,7 @@ const ManagePackages: React.FC = () => {
                   Price: ₹{pkg.basePrice}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mt-3">
+                <div className="flex flex-wrap gap-2 mt-3 min-h-[26px]">
                   {pkg.includedServices.food && (
                     <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
                       🍱 Food
