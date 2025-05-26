@@ -31,8 +31,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const location = useLocation();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("TRAVEL_USER");
+    const storedToken = localStorage.getItem("TRAVEL_ACCESS_TOKEN");
 
     if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
@@ -48,15 +48,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (user: User, token: string) => {
     setUser(user);
     setToken(token);
-    localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("token", token);
+    localStorage.setItem("TRAVEL_USER", JSON.stringify(user));
+    localStorage.setItem("TRAVEL_ACCESS_TOKEN", token);
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.removeItem("TRAVEL_USER");
+    localStorage.removeItem("TRAVEL_ACCESS_TOKEN");
     navigate("/login");
   };
 

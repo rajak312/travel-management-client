@@ -38,7 +38,7 @@ const LoginTabs = () => {
 
     loginMutate(form, {
       onSuccess: (data) => {
-        login(data.user, data.token);
+        login(data.user, data.accessToken);
         toast.success(`Welcome back, ${data.user.name} 🎉`);
 
         if (data.user.role === "admin") {

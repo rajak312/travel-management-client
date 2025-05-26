@@ -13,6 +13,13 @@ export const signup = async (user: UserSignUpPayload) => {
   return res.data;
 };
 
+export const refreshToken = async (token: string) => {
+  const res = await api.post("/api/auth/refresh-token", {
+    refreshToken: token,
+  });
+  return res.data;
+};
+
 export const logout = async () => {
   const res = await api.post("/api/auth/logout");
   return res.data;

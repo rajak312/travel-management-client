@@ -1,3 +1,4 @@
+// hooks/auth.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { login, signup, logout, getMe } from "./api";
 import { UserLoginPayload, UserSignUpPayload } from "../types/User";
@@ -6,6 +7,7 @@ export const useCurrentUser = () => {
   return useQuery({
     queryKey: ["me"],
     queryFn: getMe,
+    retry: false,
   });
 };
 
@@ -14,9 +16,7 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: (user: UserLoginPayload) => login(user),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["me"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
 };
@@ -26,9 +26,7 @@ export const useSignup = () => {
   return useMutation({
     mutationFn: (user: UserSignUpPayload) => signup(user),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["me"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
 };
@@ -38,9 +36,7 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["me"],
-      });
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
 };
