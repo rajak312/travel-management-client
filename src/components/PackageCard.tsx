@@ -28,13 +28,20 @@ const PackageCard: React.FC<PackageCardProps> = ({
 }) => {
   return (
     <div
-      className={`p-4 rounded-xl transition border shadow ${
+      className={`relative p-4 rounded-xl transition border shadow ${
         disabled
           ? "bg-gray-100 text-gray-400 cursor-not-allowed"
           : "bg-white cursor-pointer hover:shadow-lg"
       }`}
       onClick={!disabled ? onClick : undefined}
     >
+      {/* Booked Badge */}
+      {disabled && (
+        <div className="absolute top-2 right-2 bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded-full">
+          Booked
+        </div>
+      )}
+
       <h3 className="text-lg font-semibold">
         {from} ➡ {to}
       </h3>
@@ -42,6 +49,7 @@ const PackageCard: React.FC<PackageCardProps> = ({
         {startDate.slice(0, 10)} to {endDate.slice(0, 10)}
       </p>
       <p className="text-sm font-medium mt-1">₹{price}</p>
+
       <div className="mt-2 flex gap-2 flex-wrap min-h-[26px]">
         {includedServices.food && (
           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
