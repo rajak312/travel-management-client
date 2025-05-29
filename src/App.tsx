@@ -13,6 +13,7 @@ import UserBookings from "./pages/UserBookings";
 import UserLayout from "./components/UserLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home";
+import OAuthSuccess from "./pages/OAuthSuccess";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Home />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
         <Route element={<ProtectedRoute allowedRoles={["user"]} />}>
           <Route element={<UserLayout />}>
             <Route path="/dashboard" element={<UserDashboard />} />
